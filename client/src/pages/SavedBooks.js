@@ -15,7 +15,8 @@ import { REMOVE_BOOK } from "../utils/mutations";
 
 const SavedBooks = () => {
   const { loading, data } = useQuery(GET_ME);
-  const userData = data?.me || [];
+  const userData = data?.me || {};
+
 
   const [removeBook, { error }] = useMutation(REMOVE_BOOK);
 
@@ -26,12 +27,12 @@ const SavedBooks = () => {
     }
     try {
       const response = await removeBook({
-        variables: { bookId: bookId },
+        variables: { bookId },
       });
 
-      if (!response) {
-        throw new Error("something went wrong!");
-      }
+      // if (!response) {
+      //   throw new Error("something went wrong!");
+      // }
       removeBookId(bookId);
     } catch (err) {
       console.error(error);
@@ -44,8 +45,8 @@ const SavedBooks = () => {
   }
 
   // sync localStorage with what was returned from the userData query
-  const savedBookIds = userData.savedBooks.map((book) => book.bookId);
-  saveBookIds(savedBookIds);
+  // const savedBookIds = userData.savedBooks.map((book) => book.bookId);
+  // saveBookIds(savedBookIds);
 
   return (
     <>
@@ -56,7 +57,7 @@ const SavedBooks = () => {
       </Jumbotron>
       <Container>
         <h2>
-          {userData.savedBooks.length
+          {userData.savedBooks?.length
             ? `Viewing ${userData.savedBooks.length} saved ${
                 userData.savedBooks.length === 1 ? "book" : "books"
               }:`
